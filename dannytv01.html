@@ -1,0 +1,179 @@
+<!-- archivo: todo.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Todas las Plataformas - Danny TV</title>
+  <link rel="stylesheet" href="./RECURSOS/DANNY CSS/dannytv.css">
+</head>
+<body>
+  <header class="app-header">
+    <h1>Todas las Plataformas</h1>
+  </header>
+  <main class="app-content">
+    <div class="platform-card" data-type="streaming" data-url="https://www.netflix.com">
+      <img src="./RECURSOS/FOTOS/icon-netflix.png.png" alt="Netflix">
+      <h3>Netflix</h3>
+    </div>
+    <div class="platform-card" data-type="streaming" data-url="https://www.primevideo.com">
+      <img src="./RECURSOS/FOTOS/icon-amazon.png.jpg" alt="Prime Video">
+      <h3>Prime Video</h3>
+    </div>
+    <div class="platform-card" data-type="live" data-url="https://pluto.tv">
+      <img src="./RECURSOS/FOTOS/icon-plutotv.png.png" alt="Pluto TV">
+      <h3>Pluto TV</h3>
+    </div>
+    <div class="platform-card" data-type="live" data-url="https://www.canela.tv">
+      <img src="./RECURSOS/FOTOS/icon-canelatv.png.png" alt="Canela TV">
+      <h3>Canela TV</h3>
+    </div>
+    <div class="platform-card" data-type="m3u" data-url="http://widget.ottplayer.tv/">
+      <img src="./RECURSOS/FOTOS/icon-ottplayer.png.jpeg" alt="OTTPlayer">
+      <h3>Mis Listas</h3>
+    </div>
+  </main>
+  <footer class="app-footer">
+    <a href="./index.html" class="tv-button">Atrás</a>
+  </footer>
+</body>
+</html>
+
+<!-- archivo: streaming.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Streaming - Danny TV</title>
+</head>
+<body>
+  <iframe src="http://widget.ottplayer.tv/" style="width:100%; height:100vh; border:none;"></iframe>
+  <footer class="app-footer" style="text-align:center; margin:20px;">
+    <a href="./index.html" class="tv-button">Atrás</a>
+  </footer>
+</body>
+</html>
+
+<!-- archivo: tv.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TV en Vivo - Danny TV</title>
+</head>
+<body>
+  <iframe src="https://pluto.tv" style="width:100%; height:100vh; border:none;"></iframe>
+  <footer class="app-footer" style="text-align:center; margin:20px;">
+    <a href="./index.html" class="tv-button">Atrás</a>
+  </footer>
+</body>
+</html>
+
+<!-- archivo: listas.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mis Listas - Danny TV</title>
+  <link rel="stylesheet" href="./RECURSOS/DANNY CSS/dannytv.css">
+  <style>
+    #channel-list {
+      color: white;
+      text-align: center;
+      margin: 20px;
+    }
+    .channel-item {
+      padding: 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      cursor: pointer;
+    }
+    .channel-item:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+  </style>
+</head>
+<body>
+  <header class="app-header">
+    <h1>Mis Listas M3U</h1>
+  </header>
+
+  <div class="app-footer">
+    <input type="file" id="file-input" accept=".m3u">
+    <input type="text" id="url-input" placeholder="Pega URL de lista .m3u" style="padding: 10px; width: 300px;">
+    <button id="btn-load-m3u" class="tv-button">Cargar Lista</button>
+    <button id="btn-clear" class="tv-button">Borrar Lista</button>
+  </div>
+
+  <div id="channel-list"></div>
+
+  <footer class="app-footer">
+    <a href="./index.html" class="tv-button">Atrás</a>
+  </footer>
+
+  <script>
+    const fileInput = document.getElementById('file-input');
+    const urlInput = document.getElementById('url-input');
+    const btnLoad = document.getElementById('btn-load-m3u');
+    const btnClear = document.getElementById('btn-clear');
+    const channelList = document.getElementById('channel-list');
+
+    function playStream(url) {
+      window.open(url, '_blank');
+    }
+
+    function parseM3U(text) {
+      const lines = text.split('\n');
+      const channels = [];
+      for (let i = 0; i < lines.length; i++) {
+        if (lines[i].startsWith('#EXTINF')) {
+          const name = lines[i].split(',')[1] || 'Canal sin nombre';
+          const url = lines[i + 1];
+          if (url && url.includes('m3u8')) {
+            channels.push({ name, url });
+          }
+        }
+      }
+      return channels;
+    }
+
+    function showChannels(channels) {
+      channelList.innerHTML = '<h2>Canales disponibles</h2>' +
+        channels.map(c => `<div class="channel-item" onclick="playStream('${c.url}')">${c.name}</div>`).join('');
+    }
+
+    btnLoad.addEventListener('click', () => {
+      const url = urlInput.value.trim();
+      if (url) {
+        fetch(url)
+          .then(res => res.text())
+          .then(text => {
+            const channels = parseM3U(text);
+            showChannels(channels);
+          });
+      } else {
+        fileInput.click();
+      }
+    });
+
+    fileInput.addEventListener('change', e => {
+      const file = e.target.files[0];
+      const reader = new FileReader();
+      reader.onload = function(ev) {
+        const content = ev.target.result;
+        const channels = parseM3U(content);
+        showChannels(channels);
+      };
+      reader.readAsText(file);
+    });
+
+    btnClear.addEventListener('click', () => {
+      channelList.innerHTML = '';
+      urlInput.value = '';
+      fileInput.value = '';
+    });
+  </script>
+</body>
+</html>

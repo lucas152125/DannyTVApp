@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+  <link rel="stylesheet" href="../RECURSOS/DANNY CSS/dannytv.css">
+  <title>Danny TV</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #202020;
+      font-family: Arial, sans-serif;
+    }
+
+    .app-header {
+      text-align: center;
+      padding: 20px;
+      color: #fff;
+    }
+
+    .app-logo {
+      width: 200px;
+      height: 100px;
+      object-fit: contain;
+      margin-bottom: 10px;
+    }
+
+    .filter-buttons,
+    .app-footer {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin: 20px auto;
+      gap: 10px;
+    }
+
+    .tv-button {
+      background: linear-gradient(135deg, #6e00ff, #9d00ff);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 15px 30px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .tv-button:hover {
+      transform: scale(1.05);
+    }
+
+    .tv-button.active {
+      background: linear-gradient(135deg, #ff9800, #f44336);
+    }
+
+    .app-content {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .platform-card {
+      background: linear-gradient(135deg, #1f1c2c, #928dab);
+      border-radius: 16px;
+      padding: 20px;
+      margin: 10px;
+      text-align: center;
+      width: 240px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .platform-card:hover {
+      transform: scale(1.05);
+    }
+
+    .platform-card img {
+      width: 200px;
+      height: 100px;
+      border-radius: 12px;
+      object-fit: cover;
+    }
+
+    .video-player {
+      text-align: center; 
+      margin: 20px auto;
+      transition: opacity 0.3s ease;
+      opacity: 0;
+    }
+
+    .video-player.show {
+      opacity: 1;
+    }
+
+    #channel-list {
+      color: white;
+      text-align: center;
+    }
+
+    .channel-item {
+      padding: 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+      cursor: pointer;
+    }
+
+    .channel-item:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+  </style>
+  <script src="webOSTVjs-1.2.10/webOSTV.js" charset="utf-8"></script>
+  <script src="webOSTVjs-1.2.10/webOSTV-dev.js" charset="utf-8"></script>
+</head>
+
+<body>
+  <div class="app-header">
+    <img src="../RECURSOS/FOTOS/dannytvlogo.png.png" alt="Danny TV Logo" class="app-logo">
+    <h1>Danny TV</h1>
+    <button onclick="location.href='../dannytv01.html'" class="tv-button" style="margin-top: 20px;">Entrar</button>
+  </div>
+
+  <main class="app-content" id="content">
+    <div class="platform-card" data-type="streaming" data-url="https://www.netflix.com">
+      <img src="../RECURSOS/FOTOS/icon-netflix.png.png" alt="Netflix">
+      <h3>Netflix</h3>
+    </div>
+    <div class="platform-card" data-type="live" data-url="https://pluto.tv">
+      <img src="../RECURSOS/FOTOS/icon-plutotv.png.png" alt="Pluto TV">
+      <h3>Pluto TV</h3>
+    </div>
+  </main>
+
+  <div id="channel-list"></div>
+  <div class="video-player" id="video-player">
+    <video id="video-element" controls width="80%"></video>
+    <br>
+    <button id="btn-exit" class="tv-button" style="margin-top: 10px;">Salir</button>
+  </div>
+
+  <div class="app-footer">
+    <input type="file" id="file-input" accept=".m3u" hidden>
+    <input type="text" id="url-input" placeholder="Pega URL de lista .m3u" style="padding: 10px; width: 300px;">
+    <button id="btn-load-m3u" class="tv-button">Cargar Lista</button>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <script>
+    // Llamada de prueba a LS2 API (webOS)
+    webOS.service.request("luna://com.palm.systemservice", {
+      method: "clock/getTime",
+      parameters: {},
+      onSuccess: function (args) {
+        console.log("UTC:", args.utc);
+      },
+      onFailure: function (args) {
+        console.log("Failed to getTime");
+      }
+    });
+
+    const videoPlayer = document.getElementById('video-player');
+    const videoElement = document.getElementById('video-element');
+    const fileInput = document.getElementById('file-input');
+    const urlInput = document.getElementById('url-input');
+    const btnLoad = document.getElementById('btn-load-m3u');
+    const btnExit = document.getElementById('btn-exit');
+    const channelList = document.getElementById('channel-list');
+    let hlsInstance = null;
+
+    function playStream(url) {
+      if (hlsInstance) {
+        hlsInstance.destroy();
+        hlsInstance = null;
+      }
+
+      if (Hls.isSupported()) {
+        hlsInstance = new Hls();
+        hlsInstance.loadSource(url);
+        hlsInstance.attachMedia(videoElement);
+        hlsInstance.on(Hls.Events.MANIFEST_PARSED, () => {
+          videoPlayer.classList.add('show');
+          videoElement.play();
+        });
+      } else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
+        videoElement.src = url;
+        videoPlayer.classList.add('show');
+        videoElement.play();
+      } else {
+        alert('Este dispositivo no puede reproducir este tipo de stream.');
+      }
+    }
+
+    if (btnExit) {
+      btnExit.addEventListener('click', () => {
+        videoElement.pause();
+        if (hlsInstance) {
+          hlsInstance.destroy();
+          hlsInstance = null;
+        }
+        videoPlayer.classList.remove('show');
+      });
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && videoPlayer.classList.contains('show')) {
+        videoElement.pause();
+        if (hlsInstance) {
+          hlsInstance.destroy();
+          hlsInstance = null;
+        }
+        videoPlayer.classList.remove('show');
+      }
+    });
+
+    function parseM3UChannels(text) {
+      const lines = text.split('\n');
+      const channels = [];
+      for (let i = 0; i < lines.length; i++) {
+        if (lines[i].startsWith('#EXTINF')) {
+          const name = lines[i].split(',')[1] || 'Canal sin nombre';
+          const url = lines[i + 1];
+          if (url && url.includes('m3u8')) {
+            channels.push({ name, url });
+          }
+        }
+      }
+      return channels;
+    }
+
+    function showChannelList(channels) {
+      channelList.innerHTML = '<h2>Canales disponibles</h2>' +
+        channels.map(c => `<div class="channel-item" onclick="playStream('${c.url}')">${c.name}</div>`).join('');
+    }
+
+    btnLoad.addEventListener('click', () => {
+      const url = urlInput.value.trim();
+      if (url) {
+        fetch(url)
+          .then(response => response.text())
+          .then(text => {
+            const channels = parseM3UChannels(text);
+            if (channels.length > 0) {
+              showChannelList(channels);
+              playStream(channels[0].url);
+            } else {
+              alert('No se encontraron canales válidos.');
+            }
+          });
+      } else {
+        fileInput.click();
+      }
+    });
+
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const content = e.target.result;
+          const channels = parseM3UChannels(content);
+          if (channels.length > 0) {
+            showChannelList(channels);
+            playStream(channels[0].url);
+          } else {
+            alert('No se encontraron canales válidos.');
+          }
+        };
+        reader.readAsText(file);
+      }
+    });
+
+    function createFilterButtons() {
+      const content = document.getElementById('content');
+      if (!content) return;
+
+      const filterContainer = document.createElement('div');
+      filterContainer.className = 'filter-buttons';
+
+      const filters = [
+        { name: 'Todo', type: 'all' },
+        { name: 'Series', type: 'series' },
+        { name: 'Películas', type: 'movies' },
+        { name: 'TV en Vivo', type: 'live' }
+      ];
+
+      filterContainer.innerHTML = filters.map(filter => `
+        <button class="tv-button filter-btn" data-type="${filter.type}">
+          ${filter.name}
+        </button>
+      `).join('');
+
+      if (content.firstChild) {
+        content.insertBefore(filterContainer, content.firstChild);
+      } else {
+        content.appendChild(filterContainer);
+      }
+
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          const type = btn.dataset.type;
+          filterPlatforms(type);
+        });
+      });
+    }
+
+    function filterPlatforms(type) {
+      const cards = document.querySelectorAll('.platform-card');
+      cards.forEach(card => {
+        const cardType = card.dataset.type;
+        card.style.display = (type === 'all' || cardType === type) ? 'block' : 'none';
+      });
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      createFilterButtons();
+    });
+  </script>
+</body>
+</html>
