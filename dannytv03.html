@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Inicio</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: #111;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 30px;
+    }
+
+    h1 {
+      margin-bottom: 30px;
+    }
+
+    .tv-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+    }
+
+    .tv-option {
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .tv-option img {
+      width: 250px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+      transition: transform 0.3s;
+    }
+
+    .tv-option img:hover {
+      transform: scale(1.05);
+    }
+
+    .tv-option span {
+      display: block;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Selecciona un canal</h1>
+
+  <div class="tv-grid">
+    <!-- Opción para Pluto TV -->
+    <div class="tv-option" onclick="window.location.href='/dannytv03.html'">
+      <img src="pluto-logo.png" alt="Pluto TV">
+      <span>Pluto TV</span>
+    </div>
+
+    <!-- Puedes agregar más opciones aquí -->
+  </div>
+
+</body>
+</html>

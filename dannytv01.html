@@ -1,157 +1,158 @@
-<!-- archivo: todo.html -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Todas las Plataformas - Danny TV</title>
-  <link rel="stylesheet" href="./RECURSOS/DANNY CSS/dannytv.css">
-</head>
-<body>
-  <header class="app-header">
-    <h1>Todas las Plataformas</h1>
-  </header>
-  <main class="app-content">
-    <div class="platform-card" data-type="streaming" data-url="https://www.netflix.com/co/title/81150338">
-      <img src="./RECURSOS/FOTOS/icon-netflix.png.png" alt="Netflix">
-      <h3>Netflix</h3>
-    </div>
-    <div class="platform-card" data-type="streaming" data-url="https://www.primevideo.com">
-      <img src="./RECURSOS/FOTOS/icon-amazon.png.jpg" alt="Prime Video">
-      <h3>Prime Video</h3>
-    </div>
-    <div class="platform-card" data-type="live" data-url="https://pluto.tv">
-      <img src="./RECURSOS/FOTOS/icon-plutotv.png.png" alt="Pluto TV">
-      <h3>Pluto TV</h3>
-    </div>
-    <div class="platform-card" data-type="live" data-url="https://canela.tv/epg">
-      <img src="./RECURSOS/FOTOS/icon-canelatv.png.png" alt="Canela TV">
-      <h3>Canela TV</h3>
-    </div>
-    <div class="platform-card" data-type="m3u" data-url="http://widget.ottplayer.tv/">
-      <img src="./RECURSOS/FOTOS/icon-ottplayer.png.jpeg" alt="OTTPlayer">
-      <h3>Mis Listas</h3>
-    </div>
-  </main>
-  <footer class="app-footer">
-    <a href="./index.html" class="tv-button">Atrás</a>
-  </footer>
-</body>
-</html>
-
-
-<!-- archivo: tv.html -->
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TV en Vivo - Danny TV</title>
-</head>
-<body>
-  </footer>
-</body>
-</html>
-
-<!-- archivo: listas.html -->
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mis Listas - Danny TV</title>
-  <link rel="stylesheet" href="./RECURSOS/DANNY CSS/dannytv.css">
+  <title>Danny TV - Plataformas</title>
   <style>
-    #channel-list {
-      color: white;
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url('./RECURSOS/FOTOS/megan.jpg');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      font-family: Arial, sans-serif;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(32, 32, 32, 0.7);
+      z-index: -1;
+    }
+
+    .app-header {
       text-align: center;
-      margin: 20px;
+      padding: 20px;
+      color: #fff;
+      background-color: rgba(0, 0, 0, 0.5);
+      border-radius: 0 0 20px 20px;
+      margin-bottom: 20px;
     }
-    .channel-item {
-      padding: 10px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+
+    .app-logo {
+      width: 200px;
+      height: 100px;
+      object-fit: contain;
+      margin-bottom: 10px;
+      filter: drop-shadow(0 0 10px rgba(0,183,255,0.5));
+    }
+
+    .app-content {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 20px;
+      gap: 20px;
+    }
+
+    .platform-card {
+      background: rgba(31, 28, 44, 0.8);
+      border-radius: 16px;
+      padding: 20px;
+      width: 240px;
+      text-align: center;
       cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(5px);
+      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
     }
-    .channel-item:hover {
-      background: rgba(255, 255, 255, 0.1);
+
+    .platform-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 20px rgba(146, 141, 171, 0.5);
+    }
+
+    .platform-card img {
+      width: 200px;
+      height: 100px;
+      border-radius: 12px;
+      object-fit: cover;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .tv-button {
+      background: linear-gradient(135deg, #6e00ff, #9d00ff);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 12px 25px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+      margin: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .tv-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .app-footer {
+      text-align: center;
+      padding: 20px;
+      margin-top: 20px;
+    }
+
+    @media (max-width: 768px) {
+      .app-content {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .platform-card {
+        width: 80%;
+      }
     }
   </style>
 </head>
 <body>
-  <header class="app-header">
-    <h1>Carga Tus Listas M3U</h1>
-  </header>
-
-  <div class="app-footer">
+  <div class="app-header">
+    <img src="./RECURSOS/FOTOS/dannytvlogo.png" alt="Danny TV Logo" class="app-logo">
+    <h1>Danny TV - Plataformas</h1>
   </div>
 
-  <div id="channel-list"></div>
+  <main class="app-content">
+    <!-- OTT Player -->
+    <div class="platform-card" onclick="location.href='ottplayer.html'">
+      <img src="./RECURSOS/FOTOS/icon-ottplayer.png" alt="OTT Player">
+      <h3>OTT Player</h3>
+    </div>
+    
+    <!-- Pluto TV -->
+    <div class="platform-card" onclick="location.href='pluto.html'">
+      <img src="./RECURSOS/FOTOS/icon-plutotv.png" alt="Pluto TV">
+      <h3>Pluto TV</h3>
+    </div>
+    
+    <!-- Listas M3U -->
+    <div class="platform-card" onclick="location.href='listas.html'">
+      <img src="./RECURSOS/FOTOS/icon-listas.png" alt="Listas M3U">
+      <h3>Listas M3U</h3>
+    </div>
+    
+    <!-- TV en Vivo -->
+    <div class="platform-card" onclick="location.href='tv.html'">
+      <img src="./RECURSOS/FOTOS/icon-tv.png" alt="TV en Vivo">
+      <h3>TV en Vivo</h3>
+    </div>
+  </main>
 
   <footer class="app-footer">
-    <a href="./dannytv02.html" class="tv-button">M3u</a>
+    <a href="./index.html" class="tv-button">Inicio</a>
+    <a href="./configuracion.html" class="tv-button">Configuración</a>
   </footer>
-
-  <script>
-    const fileInput = document.getElementById('file-input');
-    const urlInput = document.getElementById('url-input');
-    const btnLoad = document.getElementById('btn-load-m3u');
-    const btnClear = document.getElementById('btn-clear');
-    const channelList = document.getElementById('channel-list');
-
-    function playStream(url) {
-      window.open(url, '_blank');
-    }
-
-    function parseM3U(text) {
-      const lines = text.split('\n');
-      const channels = [];
-      for (let i = 0; i < lines.length; i++) {
-        if (lines[i].startsWith('#EXTINF')) {
-          const name = lines[i].split(',')[1] || 'Canal sin nombre';
-          const url = lines[i + 1];
-          if (url && url.includes('m3u8')) {
-            channels.push({ name, url });
-          }
-        }
-      }
-      return channels;
-    }
-
-    function showChannels(channels) {
-      channelList.innerHTML = '<h2>Canales disponibles</h2>' +
-        channels.map(c => `<div class="channel-item" onclick="playStream('${c.url}')">${c.name}</div>`).join('');
-    }
-
-    btnLoad.addEventListener('click', () => {
-      const url = urlInput.value.trim();
-      if (url) {
-        fetch(url)
-          .then(res => res.text())
-          .then(text => {
-            const channels = parseM3U(text);
-            showChannels(channels);
-          });
-      } else {
-        fileInput.click();
-      }
-    });
-
-    fileInput.addEventListener('change', e => {
-      const file = e.target.files[0];
-      const reader = new FileReader();
-      reader.onload = function(ev) {
-        const content = ev.target.result;
-        const channels = parseM3U(content);
-        showChannels(channels);
-      };
-      reader.readAsText(file);
-    });
-
-    btnClear.addEventListener('click', () => {
-      channelList.innerHTML = '';
-      urlInput.value = '';
-      fileInput.value = '';
-    });
-  </script>
 </body>
 </html>
